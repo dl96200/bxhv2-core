@@ -32,8 +32,6 @@ contract StarMaking is Ownable,ReentrancyGuard{
         uint256     totalWithdrawAmount;// total amount for withdraw
         bool        stopped; // is stops?
     }
-
-    address public emergencyAddress;
     
     mapping(uint=>Phase)  public phases; //id to phase, id like 20210411, 20210405...
 
@@ -47,17 +45,9 @@ contract StarMaking is Ownable,ReentrancyGuard{
     mapping(uint => address[]) public phaseProjectList; //(phaseid ==> project address list) project list for phase
 
 
-    constructor (address _emergencyAddress,address _tokenA) public {
-        emergencyAddress = _emergencyAddress;
+    constructor (address _tokenA) public {
         tokenA = IERC20(_tokenA);
 
-    }
-
-    //manager interface
-    function setEmergencyAddress(address _newAddress) public onlyOwner {
-        require(_newAddress != address(0), "Is zero address");
-        emergencyAddress = _newAddress;
-        addCaller(msg.sender);
     }
 
     function addCaller(address _newCaller) public onlyOwner returns (bool) {
@@ -87,13 +77,6 @@ contract StarMaking is Ownable,ReentrancyGuard{
         require(isCaller(msg.sender), "Not the caller");
         _;
     }
-
-    function emergencyWithdraw(address _token) public onlyOwner {
-        require(IERC20(_token).balanceOf(address(this)) > 0, "Insufficient contract balance");
-        IERC20(_token).transfer(emergencyAddress, IERC20(_token).balanceOf(address(this)));
-    }
-
-
 
     // add phase with parameters;
     function addPhase(uint _phaseId,uint256  _blockStart,uint256  _blockEnd,uint _blockLocked) public onlyCaller{

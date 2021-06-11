@@ -21,24 +21,16 @@ contract Repurchase is Ownable {
     address public constant BXH_USDT = 0x8611a52e8AC5E10651DF7C4b58F42536f0bd2e7E;
     address public constant blackHoleAddress = 0x456D9eFa4f8039De66C8fD4a6d22953D33C6977d;
     address public constant DAOAddress = 0x0Ef67c16904Af312796560dF80E60581C43C4e24;
-    address public emergencyAddress;
     uint256 public amountIn;
     event RepurchaseSwap(uint256 amountHalf,uint256 amountHole,uint256 amountDao);
 
-    constructor (uint256 _amount, address _emergencyAddress) public {
+    constructor (uint256 _amount) public {
         require(_amount > 0, "Amount must be greater than zero");
-        require(_emergencyAddress != address(0), "Is zero address");
         amountIn = _amount;
-        emergencyAddress = _emergencyAddress;
     }
 
     function setAmountIn(uint256 _newIn) public onlyOwner {
         amountIn = _newIn;
-    }
-
-    function setEmergencyAddress(address _newAddress) public onlyOwner {
-        require(_newAddress != address(0), "Is zero address");
-        emergencyAddress = _newAddress;
     }
 
     function addCaller(address _newCaller) public onlyOwner returns (bool) {
@@ -103,16 +95,6 @@ contract Repurchase is Ownable {
     modifier onlyCaller() {
         require(isCaller(msg.sender), "Not the caller");
         _;
-    }
-
-    function emergencyWithdraw(address _token) public onlyOwner {
-        require(IERC20(_token).balanceOf(address(this)) > 0, "Insufficient contract balance");
-        IERC20(_token).transfer(emergencyAddress, IERC20(_token).balanceOf(address(this)));
-    }
-
-      // Withdraw without caring about rewards. EMERGENCY ONLY.
-    function emergencyNative(uint256 amount) public onlyOwner {
-        TransferHelper.safeTransferNative(msg.sender,amount)  ;
     }
 }
 

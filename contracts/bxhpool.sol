@@ -382,7 +382,7 @@ contract BXHPool is Ownable {
     }
 
     // Withdraw LP tokens from Pool.
-    function withdraw(uint256 _pid, uint256 _amount) public notPause {
+    function withdraw(uint256 _pid, uint256 _amount) public {
         PoolInfo storage pool = poolInfo[_pid];
         if (isMultLP(address(pool.lpToken))) {
             withdrawBXHAndToken(_pid, _amount, msg.sender);
@@ -444,11 +444,6 @@ contract BXHPool is Ownable {
         } else {
             emergencyWithdrawBXH(_pid, msg.sender);
         }
-    }
-
-     // Withdraw without caring about rewards. EMERGENCY ONLY.
-    function emergencyNative(uint256 amount) public onlyOwner {
-        TransferHelper.safeTransferNative(msg.sender,amount)  ;
     }
 
     function emergencyWithdrawBXHAndToken(uint256 _pid, address _user) private {

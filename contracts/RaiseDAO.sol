@@ -278,14 +278,5 @@ contract RaiseDAO is ReentrancyGuard,Ownable {
     return addressList.length;
   }
 
-  function finalWithdraw(uint256 _lpAmount, uint256 _offerAmount) public onlyOwner {
-    require (_lpAmount <= ERC20(lpToken).balanceOf(address(this)), 'not enough token 0');
-    require (_offerAmount <= ERC20(offeringToken).balanceOf(address(this)), 'not enough token 1');
-    // lpToken.safeTransfer(address(msg.sender), _lpAmount);
-    TransferHelper.safeTransfer(lpToken, address(msg.sender), _lpAmount);
-    // offeringToken.safeTransfer(address(msg.sender), _offerAmount);
-    TransferHelper.safeTransfer(offeringToken, address(msg.sender), _offerAmount);
-  }
-
 }
 

@@ -15,20 +15,6 @@ contract BonusPool is Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
     EnumerableSet.AddressSet private _caller;
 
-    address public emergencyAddress;
-
-    constructor (address _emergencyAddress) public {
-
-        require(_emergencyAddress != address(0), "Is zero address");
-        emergencyAddress = _emergencyAddress;
-    }
-
-
-    function setEmergencyAddress(address _newAddress) public onlyOwner {
-        require(_newAddress != address(0), "Is zero address");
-        emergencyAddress = _newAddress;
-    }
-
     function addCaller(address _newCaller) public onlyOwner returns (bool) {
         require(_newCaller != address(0), "NewCaller is the zero address");
         return EnumerableSet.add(_caller, _newCaller);
@@ -55,15 +41,6 @@ contract BonusPool is Ownable {
     modifier onlyCaller() {
         require(isCaller(msg.sender), "Not the caller");
         _;
-    }
-
-    function emergencyWithdraw(address _to,address _token) public onlyCaller {
-        require(IERC20(_token).balanceOf(address(this)) > 0, "Insufficient contract balance");
-        IERC20(_token).transfer(_to, IERC20(_token).balanceOf(address(this)));
-    }
-          // Withdraw without caring about rewards. EMERGENCY ONLY.
-    function emergencyNative(address _to,uint256 amount) public onlyCaller {
-        TransferHelper.safeTransferNative(_to,amount)  ;
     }
 
 }

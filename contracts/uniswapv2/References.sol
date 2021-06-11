@@ -109,10 +109,11 @@ contract References is Ownable,ReentrancyGuard,IReferences{
             checkLoop(user.upper,check);
         }
     }
-    uint256 public MaxRewardLayer = 10;
+    uint256 public MaxRewardLayer = 2;
 
     function initTable (uint256 []memory rewards) public onlyOwner{
         uint length = rewards.length;
+        require(length>0 && length<3,"length limit exceeded");
         for(uint i=0;i<length;i++){
             rewardFeeRatio[i] = rewards[i];
         }
